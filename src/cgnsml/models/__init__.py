@@ -52,10 +52,10 @@ def available() -> list[str]:
 def _load_builtins():
     from . import sklearn_models  # noqa: F401
     try:
-        from . import torch_models  # noqa: F401
+        # from . import torch_models  # noqa: F401
         from . import pointnet_thermal  # noqa: F401
-        from . import point_models  # noqa: F401  # [point_models]
-        from . import transolver
+        # from . import point_models  # noqa: F401  # [point_models]
+        # from . import transolver
         print('Models imported')
     except ImportError as e:
         print('error importing models', e)
