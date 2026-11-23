@@ -1,0 +1,56 @@
+data:
+  path: data/*.npz              # each file = one case (filename stem)
+  cache_dir: data/cache/sims          # per-case cache
+  type_source: zone
+  zone_type_map:
+    Chip: chip
+    PCB: pcb
+    Other_Solids: other_solids
+  zones: [Main_Chip_1, Main_Chip_2, Main_Chip_3, Main_Chip_4, Main_Chip_5, Main_Chip_6, PCB, Other_Solids]
+  solution: ""
+  sum_fields:
+    heat_gen: [Heat_data]
+  derived: [k_eq, alpha]
+  float32: false
+  points_per_case: 0
+
+sample:
+  n_train: 500000
+  n_test: 500000
+  bins: 20
+  mode: proportional        # proportional | power | uniform | custom
+  alpha: 0.3         # 0 = flat across bands, 1 = natural distribution
+  binning: equal_width
+  spatial_voxel: 0.0
+  test_mode: native
+  take_all: [chip , other_solids]
+  per_case: True
+  
+  
+
+split:
+  how: case
+  val_cases: 0          # one training simulation for best-epoch selection
+
+
+features:
+  inputs: [x, y, z, kx, ky, kz, cp, density, heat_gen]
+  targets: [temperature]
+  use_type: true        # adds type_chip / type_pcb / type_other_solids
+
+
+model:
+  name: pointnet_thermal
+  loss_weights: inverse_density   # hot-spot emphasis via the loss instead
+  scale_targets: true
+  params:
+    epochs: 1500
+    lr: 0.002
+    weight_decay: 0.00001
+    global_dim: 256
+    coord_norm: none    # try per_case once the baseline runs
+    points_per_case: 0  # >0 = fresh random subset per case every epoch
+    xyz_cols: [x, y, z]
+    patience: 0         # 0 = no early stopping, still keeps best epoch
+
+
