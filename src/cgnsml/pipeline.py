@@ -22,10 +22,7 @@ import time
 import numpy as np
 import pandas as pd
 
-from ... import sampling, splits, viz
-from ... import models
-from ... import cgns_io
-from ... import metrics
+from . import cgns_io, metrics, models, sampling, splits, viz
 from .features import Encoder, FeatureSpec
 
 DEFAULTS = {
@@ -445,3 +442,4 @@ def sweep(cfg: dict, model_names: list[str]) -> pd.DataFrame:
     df.to_csv(os.path.join(base_dir, "leaderboard.csv"), index=False)
     print("\n" + df.to_string(index=False))
     return df
+
