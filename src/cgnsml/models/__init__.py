@@ -55,7 +55,7 @@ def _load_builtins():
         # from . import torch_models  # noqa: F401
         from . import pointnet_thermal  # noqa: F401
         # from . import point_models  # noqa: F401  # [point_models]
-        # from . import transolver
+        from . import transolver
         print('Models imported')
     except ImportError as e:
         print('error importing models', e)
