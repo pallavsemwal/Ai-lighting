@@ -1,0 +1,68 @@
+data:
+  path: data/*.npz              # each file = one case (filename stem)
+  cache_dir: data/cache/sims          # per-case cache
+  type_source: zone
+  zone_type_map:
+    Chip: chip
+    PCB: pcb
+    Other_Solids: other_solids
+  zones: [Main_Chip_1, Main_Chip_2, Main_Chip_3, Main_Chip_4, Main_Chip_5, Main_Chip_6, PCB, Other_Solids]
+  solution: ""
+  sum_fields:
+    heat_gen: [Heat_data]
+  derived: [k_eq, alpha]
+  float32: false
+  points_per_case: 0
+
+sample:
+  n_train: 500000
+  n_test: 100000
+  bins: 20
+  mode: proportional        # proportional | power | uniform | custom
+  alpha: 0.3         # 0 = flat across bands, 1 = natural distribution
+  binning: equal_width
+  spatial_voxel: 0.0
+  test_mode: native
+  # take_all: [chip , other_solids]
+  per_case: True
+  
+  
+
+split:
+  how: case
+  val_cases: 1        # one training simulation for best-epoch selection
+  
+
+features:
+  inputs: [x, y, z, kx, ky, kz, cp, density, heat_gen]
+  targets: [temperature]
+  use_type: true        # adds type_chip / type_pcb / type_other_solids
+
+
+model:
+  name: transolver
+  loss_weights: inverse_density
+  scale_targets: true
+  params:
+    hidden: 256
+    layers: 8
+    heads: 8
+    slices: 32
+    mlp_ratio: 1.0
+    dropout: 0.0
+    epochs: 1500
+    lr: 0.001
+    weight_decay: 0.00001
+    sched: onecycle
+    clip: 1.0
+    loss: mse
+    amp: true
+    points_per_case: 0
+    coord_norm: none
+    xyz_cols: [0, 1, 2]
+    val_every: 1
+    patience: 0
+    predict_chunk: 100000
+    seed: 0
+    log_every: 10
+
